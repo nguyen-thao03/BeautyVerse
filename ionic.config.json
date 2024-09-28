@@ -1,0 +1,7 @@
+{
+  "name": "beautyverse",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
