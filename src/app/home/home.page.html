@@ -1,20 +1,64 @@
-<ion-header [translucent]="true">
+<ion-header>
+  <!-- Thanh tiêu đề và giỏ hàng -->
   <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
+    <ion-title class="app-title">BeautyVerse</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button fill="clear" [routerLink]="['/', 'home', 'cart']">
+        <!-- Nút giỏ hàng -->
+        <ion-icon name="bag-handle" slot="icon-only"></ion-icon>
+        @if(totalItems > 0) {
+          <ion-badge color="primary" class="cart-badge">
+            <ion-text>{{totalItems}}</ion-text>
+          </ion-badge>
+        }
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <!-- Thanh tìm kiếm -->
+  <ion-toolbar>
+    <ion-searchbar
+      debounce="800"
+      #searchInput
+      mode="ios"
+      placeholder="Tìm kiếm sản phẩm..."
+      (ionInput)="onSearchChange($event)">
+    </ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<!-- Nội dung chính -->
+<ion-content>
+  <ion-row>
+    @for(item of items; track i; let i = $index) {
+    <ion-col sizeLg="3" sizeMd="4" sizeSm="6" sizeXl="3" sizeXs="6">
+      <ion-card [routerLink]="['/', 'home', 'cosmetics', item?.id]" class="product-card">
+        <!-- Hình ảnh sản phẩm -->
+        <ion-thumbnail>
+          <ion-img [src]="item?.cover"></ion-img>
+        </ion-thumbnail>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+        <!-- Thông tin sản phẩm -->
+        <ion-label class="product-info">
+          <ion-text class="product-name" color="dark">
+            <strong>{{item?.name}}</strong>
+          </ion-text>
+          <p class="product-meta">
+            <!-- Giá sản phẩm -->
+            <ion-text color="primary">
+              <strong>{{item?.price}}</strong> ₫
+            </ion-text>
+            
+            <!-- Đánh giá sản phẩm -->
+            <ion-text class="product-rating" color="dark">
+              {{item?.rating}}
+              <ion-icon name="star" color="warning"></ion-icon>
+            </ion-text>
+          </p>
+        </ion-label>
+      </ion-card>
+    </ion-col>
+    }
+  </ion-row>
 </ion-content>

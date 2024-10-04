@@ -1,0 +1,66 @@
+<ion-content [fullscreen]="true">
+  <ion-header slot="fixed" class="ion-no-border">
+    <ion-toolbar>
+      <ion-buttons slot="start" mode="md">
+        <ion-back-button defaultHref="/home" color="dark"></ion-back-button>
+      </ion-buttons>
+
+      <ion-buttons slot="end">
+        <ion-button fill="clear" size="large" color="dark"
+        [routerLink]="['/', 'home', 'cosmetics', item?.id, 'cart']">
+          <ion-icon name="bag-handle" slot="icon-only"></ion-icon>
+          @if(totalItems > 0) {
+          <ion-badge class="cart-badge">
+            <ion-text>{{totalItems}}</ion-text>
+          </ion-badge>
+          }
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+
+  <div class="product-container">
+    <div
+      class="product-image"
+      [style.backgroundImage]="'url(' + item?.cover + ')'"
+    ></div>
+    <div class="product-info">
+      <ion-item lines="none">
+        <ion-label>
+          <h1 class="product-name">{{item?.name | uppercase}}</h1>
+          <p class="desc">{{item?.description}}</p>
+          <div class="price-container">
+            <ion-text color="medium">Giá: </ion-text>
+            <ion-text color="dark" class="price">
+              <span>{{item?.price}}</span> ₫
+            </ion-text>
+          </div>
+        </ion-label>
+      </ion-item>
+    </div>
+
+    <div class="rating-container" align="center">
+      <ion-icon name="star" color="warning"></ion-icon>
+      <span>{{item?.rating}}</span>
+    </div>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-button
+      size="large"
+      expand="block"
+      [strong]="true"
+      mode="ios"
+      [color]="addToBag ? 'success' : 'primary'"
+      (click)="addItem()"
+    >
+      <ion-icon
+        slot="start"
+        [name]="addToBag ? 'bag-handle' : 'bag-handle-outline'"
+      ></ion-icon>
+      <ion-text>{{addToBag || 'Thêm vào giỏ hàng'}}</ion-text>
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>
