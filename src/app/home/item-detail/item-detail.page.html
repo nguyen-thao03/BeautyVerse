@@ -5,7 +5,7 @@
         <ion-back-button defaultHref="/home" color="dark"></ion-back-button>
       </ion-buttons>
 
-      <ion-buttons slot="end">
+      <ion-buttons slot="end" mode="ios">
         <ion-button fill="clear" size="large" color="dark"
         [routerLink]="['/', 'home', 'cosmetics', item?.id, 'cart']">
           <ion-icon name="bag-handle" slot="icon-only"></ion-icon>
@@ -32,7 +32,7 @@
           <div class="price-container">
             <ion-text color="medium">Giá: </ion-text>
             <ion-text color="dark" class="price">
-              <span>{{item?.price}}</span> ₫
+              <span>{{item?.price | number: '0.0'}}</span> {{cartService.currency}}
             </ion-text>
           </div>
         </ion-label>

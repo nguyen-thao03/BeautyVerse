@@ -16,6 +16,7 @@ import { ApiService } from '../services/api/api.service';
 import { RouterLink } from '@angular/router';
 import { CartService } from 'src/app/services/cart/cart.service';
 import { Subscription } from 'rxjs';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-home',
@@ -35,7 +36,8 @@ import { Subscription } from 'rxjs';
     IonCard,
     IonLabel,
     IonText,
-    RouterLink
+    RouterLink,
+    DecimalPipe
   ], 
 })
 export class HomePage implements OnInit, OnDestroy {
@@ -45,7 +47,7 @@ export class HomePage implements OnInit, OnDestroy {
   totalItems = 0;
   cartSub!: Subscription;
   private api = inject(ApiService);
-  private cartService = inject(CartService);
+  public cartService = inject(CartService);
 
   constructor() {}
 

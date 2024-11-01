@@ -10,6 +10,7 @@ export class CartService {
 
   model: any = null;
   total_delivery_charge = 100;
+  tax = 5;
   cartStoreName = Strings.CART_STORAGE;
   currency = Strings.CURRENCY;
   private storage = inject(StorageService);
@@ -46,6 +47,21 @@ export class CartService {
      return this.calculate();
   }
 
+  subtractQuantity(item: any) {
+    if(this.model) {
+      const index = this.model.items.findIndex((data: any) => data.id == item.id);
+
+      if(index >= 0) {
+        if(this.model.items[index]?.quantity > 0) {
+          this.model.items[index].quantity -= 1;
+        }
+
+        return this.calculate();
+      }
+    }
+    return null;
+  }
+
   calculate() {
     const items = this.model.items.filter((item: any) => item.quantity > 0);
 
@@ -62,13 +78,16 @@ export class CartService {
       totalPrice += element.price * element.quantity;
     }
 
-    const grandTotal = totalPrice + this.total_delivery_charge;
+    const tax = totalPrice * (this.tax /100);
+
+    const grandTotal = totalPrice + this.total_delivery_charge + tax;
 
     this.model = {
       ...this.model,
       totalItem,
       totalPrice,
       total_delivery_charge: this.total_delivery_charge,
+      tax,
       grandTotal,
     };
 

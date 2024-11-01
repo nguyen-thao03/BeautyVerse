@@ -1,4 +1,4 @@
-import { UpperCasePipe } from '@angular/common';
+import { DecimalPipe, UpperCasePipe } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
@@ -37,6 +37,7 @@ import { CartService } from 'src/app/services/cart/cart.service';
     IonContent,
     UpperCasePipe,
     RouterLink,
+    DecimalPipe
   ],
 })
 export class ItemDetailPage implements OnInit, OnDestroy {
@@ -48,7 +49,7 @@ export class ItemDetailPage implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private navCtrl = inject(NavController);
   private api = inject(ApiService);
-  private cartService = inject(CartService);
+  public cartService = inject(CartService);
 
   constructor() {}
 
