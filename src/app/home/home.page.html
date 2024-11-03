@@ -3,6 +3,10 @@
   <ion-toolbar>
     <ion-title class="app-title">BeautyVerse</ion-title>
 
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+
     <ion-buttons slot="end">
       <ion-button color="primary" fill="clear" [routerLink]="['/', 'home', 'cart']">
         <!-- Nút giỏ hàng -->
@@ -36,7 +40,7 @@
       <ion-card [routerLink]="['/', 'home', 'cosmetics', item?.id]" class="product-card">
         <!-- Hình ảnh sản phẩm -->
         <ion-thumbnail>
-          <ion-img [src]="item?.cover"></ion-img>
+          <ion-img [src]="server + item?.cover"></ion-img>
         </ion-thumbnail>
 
         <!-- Thông tin sản phẩm -->

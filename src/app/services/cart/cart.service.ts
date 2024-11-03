@@ -4,10 +4,9 @@ import { Strings } from 'src/app/enum/strings.enum';
 import { StorageService } from '../storage/storage.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CartService {
-
   model: any = null;
   total_delivery_charge = 100;
   tax = 5;
@@ -24,35 +23,55 @@ export class CartService {
   constructor() {
     console.log('constructor cartservice');
     this.getCart();
-   }
+  }
 
   addQuantity(item: any) {
-     if(this.model) {
+    if (this.model) {
+      const index = this.model.items.findIndex(
+        (data: any) => data.item_id == item.id
+      );
 
-      const index = this.model.items.findIndex((data: any) => data.id == item.id);
-
-      if(index >= 0) {
+      if (index >= 0) {
         this.model.items[index].quantity += 1;
       } else {
-        const items = [{...item, quantity: 1}];
+        const items = [
+          {
+            item_id: item?.id,
+            name: item?.name,
+            description: item?.description,
+            price: +item?.price,
+            cover: item?.cover,
+            quantity: 1,
+          },
+        ];
         this.model.items = items.concat(this.model.items);
       }
-
-     } else {
-      this.model = {
-        items: [{...item, quantity: 1}]
+    } else {
+      const item_data = {
+        item_id: item?.id,
+        name: item?.name,
+        description: item?.description,
+        price: +item?.price,
+        cover: item?.cover,
+        quantity: 1,
       };
-     }
 
-     return this.calculate();
+      this.model = {
+        items: [item_data],
+      };
+    }
+
+    return this.calculate();
   }
 
   subtractQuantity(item: any) {
-    if(this.model) {
-      const index = this.model.items.findIndex((data: any) => data.id == item.id);
+    if (this.model) {
+      const index = this.model.items.findIndex(
+        (data: any) => data.item_id == item.id
+      );
 
-      if(index >= 0) {
-        if(this.model.items[index]?.quantity > 0) {
+      if (index >= 0) {
+        if (this.model.items[index]?.quantity > 0) {
           this.model.items[index].quantity -= 1;
         }
 
@@ -65,7 +84,7 @@ export class CartService {
   calculate() {
     const items = this.model.items.filter((item: any) => item.quantity > 0);
 
-    if(items?.length == 0) {
+    if (items?.length == 0) {
       this.clearCart();
       return;
     }
@@ -78,12 +97,13 @@ export class CartService {
       totalPrice += element.price * element.quantity;
     }
 
-    const tax = totalPrice * (this.tax /100);
+    const tax = totalPrice * (this.tax / 100);
 
     const grandTotal = totalPrice + this.total_delivery_charge + tax;
 
     this.model = {
       ...this.model,
+      items,
       totalItem,
       totalPrice,
       total_delivery_charge: this.total_delivery_charge,
@@ -113,10 +133,10 @@ export class CartService {
   async getCart() {
     let data: any = this._cart.value;
 
-    if(!data) {
+    if (!data) {
       data = await this.storage.getStorage(this.cartStoreName);
       console.log(data);
-      if(data?.value) {
+      if (data?.value) {
         this.model = JSON.parse(data.value);
         this._cart.next(this.model);
       }

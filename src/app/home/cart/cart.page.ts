@@ -22,6 +22,7 @@ import { Strings } from 'src/app/enum/strings.enum';
 import { AddAddressComponent } from './components/add-address/add-address.component';
 import { AddressesComponent } from './components/addresses/addresses.component';
 import { AddressService } from 'src/app/services/address/address.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-cart',
@@ -51,6 +52,7 @@ import { AddressService } from 'src/app/services/address/address.service';
 export class CartPage implements OnInit, OnDestroy {
   @ViewChild('add_address_modal') add_address_modal!: IonModal;
   @ViewChild('address_modal') address_modal!: IonModal;
+  imageBaseUrl = environment.serverImageBaseUrl;
   previous!: string;
   cartSub!: Subscription;
   selectedCoupon!: any;
@@ -109,11 +111,11 @@ export class CartPage implements OnInit, OnDestroy {
   }
   
   addQuantity(item: any) {
-    this.cartService.addQuantity(item);
+    this.cartService.addQuantity({...item, id: item?.item_id});
   }
 
   subtractQuantity(item: any) {
-    this.cartService.subtractQuantity(item);
+    this.cartService.subtractQuantity({...item, id: item?.item_id});
   }
 
   closeCouponModal(coupon: any, couponModal: IonModal) {

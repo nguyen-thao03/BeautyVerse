@@ -56,8 +56,8 @@ export class CouponsComponent implements OnInit {
   async getCoupons() {
     try {
       this.isLoading = true;
-      const coupons = this.apiService.getCoupons();
-      if (coupons.length > 0) {
+      const coupons: any[] = await this.apiService.getCoupons();
+      if (coupons?.length > 0) {
         coupons.map((coupon) => {
           coupon.saved = this.getSavedAmount(coupon);
           return coupon;

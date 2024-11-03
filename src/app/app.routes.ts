@@ -33,5 +33,19 @@ export const routes: Routes = [
     redirectTo: 'home',
     pathMatch: 'full',
   },
+  {
+    path: 'login',
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./login/login.page').then( m => m.LoginPage)
+      },
+      {
+        path: 'signup',
+        loadComponent: () => import('./login/signup/signup.page').then( m => m.SignupPage)
+      },
+    ],
+    
+  },
   
 ];

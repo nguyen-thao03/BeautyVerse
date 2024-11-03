@@ -11,7 +11,13 @@ import {
   IonImg,
   IonCard,
   IonLabel,
-  IonText, IonSearchbar, IonButtons, IonButton, IonBadge } from '@ionic/angular/standalone';
+  IonText,
+  IonSearchbar,
+  IonButtons,
+  IonButton,
+  IonBadge,
+  IonMenuButton
+} from '@ionic/angular/standalone';
 import { ApiService } from '../services/api/api.service';
 import { RouterLink } from '@angular/router';
 import { CartService } from 'src/app/services/cart/cart.service';
@@ -23,7 +29,11 @@ import { DecimalPipe } from '@angular/common';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   standalone: true,
-  imports: [IonBadge, IonButton, IonButtons, IonSearchbar, 
+  imports: [
+    IonBadge,
+    IonButton,
+    IonButtons,
+    IonSearchbar,
     IonHeader,
     IonToolbar,
     IonTitle,
@@ -36,13 +46,15 @@ import { DecimalPipe } from '@angular/common';
     IonCard,
     IonLabel,
     IonText,
+    IonMenuButton,
     RouterLink,
-    DecimalPipe
-  ], 
+    DecimalPipe,
+  ],
 })
 export class HomePage implements OnInit, OnDestroy {
   items: any[] = [];
   allItems: any[] = [];
+  server!: string;
   query!: string;
   totalItems = 0;
   cartSub!: Subscription;
@@ -56,15 +68,25 @@ export class HomePage implements OnInit, OnDestroy {
     this.getItems();
 
     this.cartSub = this.cartService.cart.subscribe({
-       next: (cart) => {
-         this.totalItems = cart ? cart?.totalItem : 0;
-       }
-     });
+      next: (cart) => {
+        this.totalItems = cart ? cart?.totalItem : 0;
+      },
+    });
   }
 
-  getItems() {
-    this.allItems = this.api.items;
-    this.items = [...this.allItems];
+  async getItems() {
+    try {
+     const data: any = await this.api.getCosmetics();
+     console.log(data);
+     if(data) {
+      this.allItems = data?.data;
+      this.server = data?.server_base_url;
+     }
+      this.items = [...this.allItems]; 
+    }catch(e) {
+      console.log(e);
+    }
+    
   }
 
   onSearchChange(event: any) {
@@ -76,19 +98,30 @@ export class HomePage implements OnInit, OnDestroy {
 
   querySearch() {
     this.items = [];
-    if(this.query.length > 0) {
+    if (this.query.length > 0) {
       this.searchItems();
     } else {
       this.items = [...this.allItems];
     }
   }
 
-  searchItems() {
-    this.items = this.api.items.filter((item) =>
-    item.name.toLowerCase().includes(this.query));
+  async searchItems() {
+    // this.items = this.api.items.filter((item) =>
+    //   item.name.toLowerCase().includes(this.query)
+    // );
+    try {
+      const data: any = await this.api.searchCosmetics(this.query);
+      console.log(data);
+      if(data) {
+        this.server = data?.server_base_url;
+        this.items = data?.data;
+      }
+    } catch(e) {
+      console.log(e);
+    }
   }
 
   ngOnDestroy(): void {
-    if(this.cartSub) this.cartSub.unsubscribe();
+    if (this.cartSub) this.cartSub.unsubscribe();
   }
 }

@@ -13,7 +13,9 @@ import {
   IonLabel,
   IonText,
   IonFooter,
-  IonButton, IonBadge } from '@ionic/angular/standalone';
+  IonButton,
+  IonBadge,
+} from '@ionic/angular/standalone';
 import { Subscription } from 'rxjs';
 import { ApiService } from 'src/app/services/api/api.service';
 import { CartService } from 'src/app/services/cart/cart.service';
@@ -23,7 +25,8 @@ import { CartService } from 'src/app/services/cart/cart.service';
   templateUrl: './item-detail.page.html',
   styleUrls: ['./item-detail.page.scss'],
   standalone: true,
-  imports: [IonBadge, 
+  imports: [
+    IonBadge,
     IonButton,
     IonFooter,
     IonText,
@@ -37,12 +40,13 @@ import { CartService } from 'src/app/services/cart/cart.service';
     IonContent,
     UpperCasePipe,
     RouterLink,
-    DecimalPipe
+    DecimalPipe,
   ],
 })
 export class ItemDetailPage implements OnInit, OnDestroy {
   id!: string;
   item: any;
+  server!: string;
   addToBag!: any;
   totalItems = 0;
   cartSub!: Subscription;
@@ -60,11 +64,11 @@ export class ItemDetailPage implements OnInit, OnDestroy {
       next: (cart) => {
         console.log(cart);
         this.totalItems = cart ? cart?.totalItem : 0;
-      }
+      },
     });
   }
 
-  getItem() {
+  async getItem() {
     const id = this.route.snapshot.paramMap.get('id');
     console.log('check id: ', id);
     if (!id || id == '0') {
@@ -73,12 +77,22 @@ export class ItemDetailPage implements OnInit, OnDestroy {
     }
     this.id = id;
 
-    this.item = this.api.items.find((record) => record.id == id);
-    console.log(this.item);
+    //   this.item = this.api.items.find((record) => record.id == id);
+    //   console.log(this.item);
+    try {
+      const data: any = await this.api.getCosmeticById(id);
+      if (data) {
+        this.server = data?.server_base_url;
+        this.item = data?.data;
+      }
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   addItem() {
-    const result = this.cartService.addQuantity(this.item);
+    const item = {...this.item};
+    const result = this.cartService.addQuantity(item);
     this.addedText();
   }
 
@@ -90,6 +104,6 @@ export class ItemDetailPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if(this.cartSub) this.cartSub.unsubscribe();
+    if (this.cartSub) this.cartSub.unsubscribe();
   }
 }
