@@ -1,9 +1,80 @@
 <ion-content [fullscreen]="true">
   <ion-card>
-    <div align="center">
-      <img src="assets/imgs/logo.png" alt="">
+    <div align="center" class="logo">
+      <img src="assets/imgs/logo.png" alt="" />
     </div>
 
-    <form [formGroup]="form"></form>
+    <form [formGroup]="form" class="ion-margin-horizontal">
+      <ion-input
+        label=""
+        class="ion-margin-bottom"
+        color="primary"
+        type="email"
+        placeholder="Email"
+        formControlName="email"
+        errorText="* Vui lòng nhập email"
+      >
+        <ion-icon slot="start" name="person-outline" color="dark"></ion-icon>
+      </ion-input>
+
+      <ion-input
+        label=""
+        type="password"
+        color="primary"
+        placeholder="Mật khẩu"
+        formControlName="password"
+        [errorText]="form.get('password')?.hasError('minlength') ? '* Mật khẩu phải tối thiểu 8 kí tự' : '* Vui lòng nhập mật khẩu'"
+      >
+        <ion-icon
+          slot="start"
+          name="lock-closed-outline"
+          color="dark"
+        ></ion-icon>
+
+        <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+      </ion-input>
+
+      <div align="right" class="ion-margin-bottom" class="forgot-password">
+        <ion-button fill="clear" color="primary" size="small"
+          >Quên mật khẩu?</ion-button
+        >
+      </div>
+
+      @if(!isLogin) {
+      <ion-button
+        expand="block"
+        size="large"
+        class="ion-padding login-button"
+        shape="round"
+        [strong]="true"
+        (click)="onSubmit()"
+      >
+        <ion-text>Đăng nhập</ion-text>
+      </ion-button>
+      } @else {
+      <ion-button
+        expand="block"
+        size="large"
+        class="ion-padding login-button"
+        shape="round"
+        [strong]="true"
+      >
+        <ion-spinner name="crescent" color="light"></ion-spinner>
+      </ion-button>
+      }
+    </form>
+
+    <div align="center" class="ion-padding-bottom signup">
+      <ion-text>Chưa có tài khoản? </ion-text>
+      <ion-button
+        fill="clear"
+        color="dark"
+        size="small"
+        [strong]="true"
+        routerLink="signup"
+      >
+        <ion-text slot="start">Đăng ký</ion-text>
+      </ion-button>
+    </div>
   </ion-card>
 </ion-content>

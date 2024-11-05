@@ -1,6 +1,6 @@
 import { DecimalPipe } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 import {
   IonHeader,
   IonTitle,
@@ -166,7 +166,32 @@ export class CartPage implements OnInit, OnDestroy {
   }
 
   navigateToPayout() {
+    //if(!this.address) return;
+    let data: any = {
+      grandTotal: this.model?.grandTotal,
+      totalPrice: this.model?.totalPrice,
+      total_delivery_charge: this.model?.total_delivery_charge,
+      totalItem: this.model?.totalItem,
+      items: this.model.items,
+      address: JSON.stringify(this.address),
+      tax: this.model.tax || 0,
+    };
 
+    if(this.selectedCoupon) {
+      data = {
+        ...data,
+        discount: this.selectedCoupon?.saved,
+        coupon: this.selectedCoupon.code,
+      };
+    }
+
+    const navData: NavigationExtras = {
+      queryParams: {
+        data: JSON.stringify(data),
+      }
+    };
+
+    this.router.navigate([this.router.url, 'payment-option'], navData);
   }
 
   ngOnDestroy(): void {

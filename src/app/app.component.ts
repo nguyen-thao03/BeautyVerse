@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   IonApp,
   IonRouterOutlet,
@@ -12,14 +12,17 @@ import {
   IonContent,
   IonIcon,
   IonMenuToggle,
+  Platform
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
   add,
+  arrowBack,
   arrowBackOutline,
   bagHandle,
   bagHandleOutline,
   bagHandleSharp,
+  callOutline,
   documentLockOutline,
   documentLockSharp,
   homeOutline,
@@ -30,8 +33,10 @@ import {
   keySharp,
   locationOutline,
   locationSharp,
+  lockClosedOutline,
   logOutOutline,
   logOutSharp,
+  mailOutline,
   personOutline,
   personSharp,
   remove,
@@ -39,6 +44,7 @@ import {
   ticketOutline,
   trashOutline,
 } from 'ionicons/icons';
+import { AuthService } from './services/auth/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -61,10 +67,6 @@ import {
   ],
 })
 export class AppComponent {
-  profile = {
-    name: 'Nguyen Thao',
-    email: 'nguyenthao1234@gmail.com',
-  };
 
   pages = [
     { title: 'Home', url: '/home', icon: 'home', active: true },
@@ -87,8 +89,23 @@ export class AppComponent {
     { title: 'Sign Out', icon: 'log-out', route: true, active: false },
   ];
 
+  token: any;
+  profile: any = {};
+
+  private platform = inject(Platform);
+  private auth = inject(AuthService);
+
   constructor() {
-    this.addAllIcons();
+    this.platform.ready().then(() => {
+      this.addAllIcons();
+      this.auth.token.subscribe({
+        next: (token) => {
+          this.token = token;
+          if(token) this.getProfile();
+        }
+      });
+    });
+    
   }
 
   addAllIcons() {
@@ -115,7 +132,11 @@ export class AppComponent {
       personSharp,
       locationSharp,
       keyOutline,
-      keySharp
+      keySharp,
+      lockClosedOutline,
+      mailOutline,
+      callOutline,
+      arrowBack
     });
   }
 
@@ -126,12 +147,23 @@ export class AppComponent {
       page.active = true;
     }
 
-    if (page?.route) {
+    if (!page?.route) {
       //navigate
     } else {
       this.logout();
     }
   }
 
-  logout() {}
+  async getProfile() {
+    try {
+      this.profile = await this.auth.getProfile();
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  logout() {
+    console.log('logout');
+    this.auth.logout();
+  }
 }

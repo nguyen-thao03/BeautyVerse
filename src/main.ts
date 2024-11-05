@@ -5,13 +5,21 @@ import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular/standalo
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
 import { DecimalPipe } from '@angular/common';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { TokenInterceptor } from './app/interceptors/token-interceptor';
+import { environment } from './environments/environment';
+import { enableProdMode } from '@angular/core';
 
+if(environment.production) {
+  enableProdMode();
+}
 bootstrapApplication(AppComponent, {
   providers: [
     DecimalPipe,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    provideHttpClient(),
+    provideHttpClient(
+      withInterceptors([TokenInterceptor])
+    ),
     provideIonicAngular(),
     provideRouter(routes, withPreloading(PreloadAllModules)),
   ],

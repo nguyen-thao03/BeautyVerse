@@ -1,6 +1,13 @@
+import { inject } from '@angular/core';
 import { Routes } from '@angular/router';
+import { AuthService } from './services/auth/auth.service';
 
 export const routes: Routes = [
+  {
+    path: '',
+    redirectTo: 'home',
+    pathMatch: 'full',
+  },
   {
     path: 'home',
     children: [
@@ -21,17 +28,24 @@ export const routes: Routes = [
           },
           {
             path: 'cart',
-            loadComponent: () => import('./home/cart/cart.page').then( m => m.CartPage)
+            children: [
+              {
+                path: '',
+                loadComponent: () => import('./home/cart/cart.page').then( m => m.CartPage)
+              },
+              {
+                path: 'payment-option',
+                loadComponent: () => import('./home/cart/payment-option/payment-option.page').then( m => m.PaymentOptionPage)
+              },
+
+            ]
+            
           },
         ],
         
       },
     ],
-  },
-  {
-    path: '',
-    redirectTo: 'home',
-    pathMatch: 'full',
+    canMatch: [ async () => await inject(AuthService).authGuard()],
   },
   {
     path: 'login',
@@ -46,6 +60,10 @@ export const routes: Routes = [
       },
     ],
     
+  },
+  {
+    path: 'orders',
+    loadComponent: () => import('./home/orders/orders.page').then( m => m.OrdersPage)
   },
   
 ];
